@@ -1,15 +1,23 @@
-import implementierung.*;
-import schnittstellen.*;
+import implementierung.List;
+import implementierung.Queue;
+import implementierung.Stack;
+import implementierung.ValueElement;
+import schnittstellen.IList;
+import schnittstellen.IQueue;
+import schnittstellen.IStack;
+import schnittstellen.IValueElement;
 
 public class Main
 {
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         testDVL();
         testStack();
         testQueue();
     }
 
-    private static void testDVL() {
+    private static void testDVL()
+    {
         System.out.println("=== DVL Test ===");
         IList list = new List();
 
@@ -63,7 +71,8 @@ public class Main
         System.out.println("Nach deleteAllOf(" + newDefaultCreatedObject.toString() + "): " + list.toString());
     }
 
-    private static void testStack() {
+    private static void testStack()
+    {
         System.out.println("\n=== Stack Test ===");
         IStack stack = new Stack();
 
@@ -72,14 +81,16 @@ public class Main
         System.out.println("Stack ist voll: " + stack.isFull());
 
         System.out.println("\n--- Push Tests ---");
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 5; i++)
+        {
             stack.push(i * 10);
             System.out.println("Push " + (i * 10) + ", Größe: " + stack.getSize() + ", Top: " + stack.top());
         }
 
         // Fehlerhafte Werte testen
         System.out.println("\n--- Fehlerhafte Werte Tests ---");
-        try {
+        try
+        {
             stack.push(-5);
         }
         catch (Exception e)
@@ -116,7 +127,8 @@ public class Main
         System.out.println("DVL nach allen Operationen: " + stack.getDVL().toString());
     }
 
-    private static void testQueue() {
+    private static void testQueue()
+    {
         System.out.println("\n=== Queue Test ===");
         IQueue queue = new Queue();
 
@@ -125,14 +137,16 @@ public class Main
         System.out.println("Queue ist voll: " + queue.isFull());
 
         System.out.println("\n--- Enqueue Tests ---");
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 5; i++)
+        {
             queue.enqueue(i * 10);
             System.out.println("Enqueue " + (i * 10) + ", Größe: " + queue.getSize() + ", Front: " + queue.front());
         }
 
         // Fehlerhafte Werte testen
         System.out.println("\n--- Fehlerhafte Werte Tests ---");
-        try {
+        try
+        {
             queue.enqueue(-3);
         }
         catch (Exception e)
@@ -161,7 +175,6 @@ public class Main
         System.out.println("Dequeue: " + queue.dequeue() + ", Größe: " + queue.getSize());
         System.out.println("Dequeue: " + queue.dequeue() + ", Größe: " + queue.getSize());
         System.out.println("Dequeue: " + queue.dequeue() + ", Größe: " + queue.getSize());
-
 
         // Dequeue von leerer Queue
         System.out.println("Dequeue von leerer Queue: " + queue.dequeue());

@@ -4,33 +4,36 @@ package implementierung;
 import schnittstellen.IList;
 import schnittstellen.IQueue;
 
-public class Queue implements IQueue {
+public class Queue implements IQueue
+{
     private final IList DVL = new List();
+
     private final int MAX_SIZE = 7; // Inklusive Dummy
 
-    @Override
-    public IList getDVL() {
+    public IList getDVL()
+    {
         return this.DVL;
     }
 
-    @Override
-    public int getSize() {
+    public int getSize()
+    {
         return this.DVL.getSize() - 1; // Dummy nicht mitzählen
     }
 
-    @Override
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return this.DVL.getSize() == 1; // Nur Dummy vorhanden
     }
 
-    @Override
-    public boolean isFull() {
+    public boolean isFull()
+    {
         return this.DVL.getSize() >= MAX_SIZE;
     }
 
-    @Override
-    public int dequeue() {
-        if (isEmpty()) {
+    public int dequeue()
+    {
+        if (isEmpty())
+        {
             return -1;
         }
 
@@ -40,9 +43,10 @@ public class Queue implements IQueue {
         return frontElement.getValue();
     }
 
-    @Override
-    public void enqueue(int value) {
-        if (value < 0 || isFull()) {
+    public void enqueue(int value)
+    {
+        if (value < 0 || isFull())
+        {
             return; // Ungültiger Wert oder Queue voll
         }
 
@@ -50,9 +54,10 @@ public class Queue implements IQueue {
         this.DVL.insertAtTheEnd(element);
     }
 
-    @Override
-    public int front() {
-        if (isEmpty()) {
+    public int front()
+    {
+        if (isEmpty())
+        {
             return -1;
         }
 

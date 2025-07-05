@@ -3,33 +3,36 @@ package implementierung;
 import schnittstellen.IList;
 import schnittstellen.IStack;
 
-public class Stack implements IStack {
+public class Stack implements IStack
+{
     private final IList DVL = new List();
+
     private final int MAX_SIZE = 7; // Inklusive Dummy
 
-    @Override
-    public IList getDVL() {
+    public IList getDVL()
+    {
         return this.DVL;
     }
 
-    @Override
-    public int getSize() {
+    public int getSize()
+    {
         return this.DVL.getSize() - 1; // Dummy nicht mitzählen
     }
 
-    @Override
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return this.DVL.getSize() == 1; // Nur Dummy vorhanden
     }
 
-    @Override
-    public boolean isFull() {
+    public boolean isFull()
+    {
         return this.DVL.getSize() >= MAX_SIZE;
     }
 
-    @Override
-    public int pop() {
-        if (isEmpty()) {
+    public int pop()
+    {
+        if (isEmpty())
+        {
             return -1;
         }
 
@@ -39,9 +42,10 @@ public class Stack implements IStack {
         return topElement.getValue();
     }
 
-    @Override
-    public void push(int value) {
-        if (value < 0 || isFull()) {
+    public void push(int value)
+    {
+        if (value < 0 || isFull())
+        {
             return; // Ungültiger Wert oder Stack voll
         }
 
@@ -49,9 +53,10 @@ public class Stack implements IStack {
         this.DVL.insertAtTheEnd(element);
     }
 
-    @Override
-    public int top() {
-        if (isEmpty()) {
+    public int top()
+    {
+        if (isEmpty())
+        {
             return -1;
         }
 
