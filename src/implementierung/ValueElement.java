@@ -41,6 +41,7 @@ public class ValueElement implements IValueElement
     //TODO: no definition for it
     public String toString()
     {
-        return "";
+        //TODO: how does the list look like?
+        return "(" + name + ", " + value + ")";
     }
 }

@@ -6,9 +6,12 @@ import schnittstellen.IQueue;
 //TODO: Queue has max limit of 7 items, including the unchangeable head??
 public class Queue implements IQueue
 {
-    private IList DVL; //TODO: IList<IValueElement> how should int work in this case?
+    private final IList DVL = new List(); //TODO: IList<IValueElement> how should int work in this case?
 
     private int size; //TODO: do I have to create a private property? or extend ILIST
+
+    private final int MIN_SIZE = 0;
+    private final int MAX_SIZE = 7;
 
     public Queue()
     {
@@ -24,25 +27,27 @@ public class Queue implements IQueue
         return this.DVL.getSize();
     }
 
+    //TODO: includes head as well? if yes, this will never be empty
     public boolean isEmpty()
     {
-        return this.getSize() == 0;
+        return this.getSize() == MIN_SIZE;
     }
 
     public boolean isFull()
     {
-        return this.getSize() == 7;
+        return this.getSize() == MAX_SIZE; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
     }
 
     public int dequeue()
     {
         //TODO: get first value of list and remove it from the list
         //TODO: how do I know which element waited the most?
-        if (!this.isEmpty())
+        if (!this.isEmpty() && this.getSize() > 1)
         {
-            var firstItem = this.DVL.getHead(); //TODO: is head first position? because head always remains the same
-            this.DVL.deleteFirstOf(firstItem.getValueElement());
-            return firstItem.getValueElement().getValue();
+            //TODO: is head first position? because head always remains the same
+            var firstItem = this.DVL.getElementAt(this.getSize() - 1);
+            this.DVL.deleteFirstOf(firstItem);
+            return firstItem.getValue();
         }
         return -1;
     }
@@ -70,10 +75,11 @@ public class Queue implements IQueue
     {
         //TODO: get first value of list and remove it from the list
         //TODO: how do I know which element waited the most?
-        if (!this.isEmpty())
+        if (!this.isEmpty() && this.getSize() > 1)
         {
-            var firstItem = this.DVL.getHead(); //TODO: is head first position? because head always remains the same
-            return firstItem.getValueElement().getValue();
+            //TODO: is head first position? because head always remains the same
+            var firstItem = this.DVL.getElementAt(this.getSize() - 1);
+            return firstItem.getValue();
         }
         return -1;
     }

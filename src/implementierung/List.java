@@ -55,6 +55,11 @@ public class List implements IList
 
     public void deleteFirstOf(IValueElement value)
     {
+        //TODO: should dummy be deletable?
+        if (value == this.head.getValueElement())
+        {
+            return;
+        }
         for (int i = 0; i < this.list.size(); i++)
         {
             if (this.list.get(i).getValueElement() == value)
@@ -68,6 +73,11 @@ public class List implements IList
 
     public void deleteAllOf(IValueElement value)
     {
+        //TODO: should dummy be deletable?
+        if (value == this.head.getValueElement())
+        {
+            return;
+        }
         this.list.removeIf(listElement -> listElement.getValueElement() == value);
         this.listContentChanged();
     }
@@ -106,7 +116,24 @@ public class List implements IList
 
     public String toString()
     {
-        return ""; //TODO: what should it return???
+        //TODO: how does the list look like?
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        IListElement current = this.head;
+        boolean first = true;
+
+        while (current != null) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(current.getValueElement().toString());
+            first = false;
+            current = current.getSuccessor();
+        }
+
+        sb.append("]");
+        return sb.toString();
     }
 
     public int getSize()
