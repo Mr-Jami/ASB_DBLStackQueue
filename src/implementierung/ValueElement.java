@@ -10,12 +10,14 @@ public class ValueElement implements IValueElement
 
     public ValueElement(String name, int value)
     {
-        if (name == null)
-        {
-            throw new NullPointerException("Name can't be null"); //TODO: should it be an exception?
-        }
-        this.name = name;
+        this.name = (name != null) ? name : ""; //TODO: should it be an exception?
         this.value = value;
+    }
+
+    public ValueElement() //TODO: should I have a default constructor for null valueElements?
+    {
+        //TODO: what parameters for default/null valueElement
+        this("", 0);
     }
 
     public String getName()
@@ -25,7 +27,7 @@ public class ValueElement implements IValueElement
 
     public void setName(String paramName)
     {
-        this.name = paramName;
+        this.name = (paramName != null) ? paramName : "";
     }
 
     public int getValue()

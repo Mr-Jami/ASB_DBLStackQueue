@@ -13,11 +13,9 @@ public class ListElement implements IListElement
 
     public ListElement(IValueElement valueElement)
     {
-        if (valueElement == null)
-        {
-            throw new NullPointerException("valueElement is null"); //TODO: should exception be thrown?
-        }
-        this.valueElement = valueElement;
+        this.valueElement = (valueElement != null) ? valueElement : new ValueElement(); //TODO: should exception be thrown?
+        this.predecessor = null;
+        this.successor = null;
     }
 
     public IValueElement getValueElement()
@@ -27,7 +25,7 @@ public class ListElement implements IListElement
 
     public void setValueElement(IValueElement value)
     {
-        this.valueElement = value;
+        this.valueElement = (value != null) ? value : new ValueElement(); //TODO: should exception be thrown?
     }
 
     public IListElement getPredecessor()

@@ -23,7 +23,6 @@ public class List implements IList
 
     public IListElement getHead()
     {
-        this.head = this.list.getFirst(); //TODO: welches Element ist head?
         return this.head;
     }
 
@@ -123,8 +122,10 @@ public class List implements IList
         IListElement current = this.head;
         boolean first = true;
 
-        while (current != null) {
-            if (!first) {
+        while (current != null)
+        {
+            if (!first)
+            {
                 sb.append(", ");
             }
             sb.append(current.getValueElement().toString());
@@ -144,7 +145,7 @@ public class List implements IList
     private IValueElement nonNullValueElement(IValueElement valueElement)
     {
         //TODO: what should the parameters be
-        return valueElement == null ? new ValueElement("NULL VALUE", 0) : valueElement;
+        return valueElement == null ? new ValueElement() : valueElement;
     }
 
     private void listContentChanged()
