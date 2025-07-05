@@ -22,5 +22,5 @@ public interface IList
 
     public String toString();
 
-    public int getSize();
+    public int getSize(); //TODO: can I add my own helper method here?
 }
