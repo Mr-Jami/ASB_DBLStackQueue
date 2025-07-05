@@ -8,21 +8,21 @@ public class List implements IList
 {
     private IListElement head;
 
-    private int size = 0;
-
     public List()
     {
-        // Dummy-Element als Kopf erstellen
-        IValueElement dummy = new ValueElement("Dummy", 0);
+        IValueElement dummy = new ValueElement("Dummy (Kopf)", 0);
         this.head = new ListElement(dummy);
-        this.size = 1; // Dummy zählt mit
+        this.head.setPredecessor(null);
+        this.head.setSuccessor(null);
     }
 
+    @Override
     public IListElement getHead()
     {
         return this.head;
     }
 
+    @Override
     public void insertAtTheEnd(IValueElement value)
     {
         if (value == null)
@@ -32,23 +32,27 @@ public class List implements IList
 
         IListElement newElement = new ListElement(value);
 
-        if (this.size == 1)
-        { // Nur Dummy vorhanden
+        // Prüfen ob Liste leer ist (nur Dummy)
+        if (this.head.getSuccessor() == null)
+        {
+            // Erstes Element nach Dummy
             this.head.setSuccessor(newElement);
             newElement.setPredecessor(this.head);
-            this.head.setPredecessor(newElement); // Zirkuläre Verkettung
+            newElement.setSuccessor(null);
+            this.head.setPredecessor(newElement); // Kopf zeigt auf letztes Element
         }
         else
         {
+            // Element am Ende anhängen
             IListElement last = this.head.getPredecessor();
             last.setSuccessor(newElement);
             newElement.setPredecessor(last);
             newElement.setSuccessor(null);
-            this.head.setPredecessor(newElement);
+            this.head.setPredecessor(newElement); // Kopf zeigt auf neues letztes Element
         }
-        this.size++;
     }
 
+    @Override
     public void insertAtPos(int pos, IValueElement value)
     {
         if (value == null)
@@ -61,7 +65,10 @@ public class List implements IList
             pos = 1;
         }
 
-        if (pos >= this.size)
+        // Zähle aktuelle Elemente (ohne Dummy)
+        int currentSize = countElements();
+
+        if (pos > currentSize)
         {
             insertAtTheEnd(value);
             return;
@@ -82,25 +89,23 @@ public class List implements IList
         newElement.setSuccessor(current);
         prev.setSuccessor(newElement);
         current.setPredecessor(newElement);
-
-        this.size++;
     }
 
+    @Override
     public void deleteFirstOf(IValueElement value)
     {
         if (value == null)
         {
             return;
-
         }
 
-        //TODO: should dummy be skipped?
         IListElement current = this.head.getSuccessor();
 
         while (current != null)
         {
             if (current.getValueElement() == value)
             {
+                // Element entfernen
                 IListElement prev = current.getPredecessor();
                 IListElement next = current.getSuccessor();
 
@@ -111,16 +116,16 @@ public class List implements IList
                 }
                 else
                 {
+                    // Letztes Element wird gelöscht
                     this.head.setPredecessor(prev);
                 }
-
-                this.size--;
                 return;
             }
             current = current.getSuccessor();
         }
     }
 
+    @Override
     public void deleteAllOf(IValueElement value)
     {
         if (value == null)
@@ -128,7 +133,6 @@ public class List implements IList
             return;
         }
 
-        //TODO: should dummy be skipped?
         IListElement current = this.head.getSuccessor();
 
         while (current != null)
@@ -149,16 +153,15 @@ public class List implements IList
                 {
                     this.head.setPredecessor(prev);
                 }
-
-                this.size--;
             }
             current = next;
         }
     }
 
+    @Override
     public IValueElement getElementAt(int position)
     {
-        if (position <= 0 || position >= this.size)
+        if (position <= 0)
         {
             return null;
         }
@@ -167,11 +170,16 @@ public class List implements IList
         for (int i = 0; i < position; i++)
         {
             current = current.getSuccessor();
+            if (current == null)
+            {
+                return null;
+            }
         }
 
         return current.getValueElement();
     }
 
+    @Override
     public int getFirstPosOf(IValueElement value)
     {
         if (value == null)
@@ -180,53 +188,61 @@ public class List implements IList
         }
 
         IListElement current = this.head;
+        int position = 0;
 
-        for (int i = 0; i < this.size; i++)
+        while (current != null)
         {
             if (current.getValueElement() == value)
             {
-                return i;
+                return position;
             }
             current = current.getSuccessor();
+            position++;
         }
 
         return -1;
     }
 
+    @Override
     public boolean member(IValueElement value)
     {
         return getFirstPosOf(value) != -1;
     }
 
+    @Override
     public void reverse()
     {
-        if (this.size <= 2)
+        // Prüfen ob Liste leer oder nur ein Element hat
+        if (this.head.getSuccessor() == null || this.head.getSuccessor().getSuccessor() == null)
         {
-            return; // Nur Dummy oder ein Element
+            return;
         }
 
         IListElement current = this.head.getSuccessor();
         IListElement prev = null;
-        IListElement last = this.head.getPredecessor();
+        IListElement first = current; // Erstes Element merken
 
-        // Erste Element nach Dummy wird zum letzten
-        this.head.setPredecessor(current);
-
+        // Alle Zeiger umdrehen
         while (current != null)
         {
             IListElement next = current.getSuccessor();
             current.setSuccessor(prev);
-            current.setPredecessor(next);
+            if (prev != null)
+            {
+                prev.setPredecessor(current);
+            }
             prev = current;
             current = next;
         }
 
-        // Head zeigt auf das neue erste Element (vorher letztes)
-        this.head.setSuccessor(last);
-        last.setPredecessor(this.head);
+        // Head-Zeiger anpassen
+        this.head.setSuccessor(prev); // Zeigt auf neues erstes Element
+        prev.setPredecessor(this.head);
+        this.head.setPredecessor(first); // Zeigt auf neues letztes Element
+        first.setSuccessor(null);
     }
 
-    //TODO: how does the list look like?
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -250,8 +266,16 @@ public class List implements IList
         return sb.toString();
     }
 
-    public int getSize()
+    // Hilfsmethode zum Zählen der Elemente (ohne Dummy)
+    private int countElements()
     {
-        return this.size;
+        int count = 0;
+        IListElement current = this.head.getSuccessor();
+        while (current != null)
+        {
+            count++;
+            current = current.getSuccessor();
+        }
+        return count;
     }
 }

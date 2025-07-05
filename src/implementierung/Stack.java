@@ -1,71 +1,83 @@
 package implementierung;
 
 import schnittstellen.IList;
+import schnittstellen.IListElement;
 import schnittstellen.IStack;
 
-//TODO: stack has max limit of 7 items, including the unchangeable head??
 public class Stack implements IStack
 {
     private final IList dvl = new List();
 
-    private final int maxSize = 7; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
+    private final int maxSize = 7;
 
+    @Override
     public IList getDVL()
     {
         return this.dvl;
     }
 
+    @Override
     public int getSize()
     {
-        return this.dvl.getSize() - 1; // without head
+        // Elemente zählen (ohne Dummy)
+        int count = 0;
+        IListElement current = this.dvl.getHead().getSuccessor();
+        while (current != null)
+        {
+            count++;
+            current = current.getSuccessor();
+        }
+        return count;
     }
 
-    //TODO: includes head as well? if yes, this will never be empty
+    @Override
     public boolean isEmpty()
     {
-        return this.dvl.getSize() == 1; // contains head only
+        return this.dvl.getHead().getSuccessor() == null;
     }
 
+    @Override
     public boolean isFull()
     {
-        return this.dvl.getSize() >= maxSize; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
+        return getSize() >= maxSize;
     }
 
+    @Override
     public int pop()
     {
-        //TODO: get first value of list and remove it from the list
         if (isEmpty())
         {
             return -1;
         }
 
-        //TODO: is head first position? because head always remains the same
-        var topElement = this.dvl.getElementAt(this.dvl.getSize() - 1);
-        this.dvl.deleteFirstOf(topElement);
-        return topElement.getValue();
+        // Letztes Element finden und entfernen
+        IListElement last = this.dvl.getHead().getPredecessor();
+        int value = last.getValueElement().getValue();
+        this.dvl.deleteFirstOf(last.getValueElement());
+        return value;
     }
 
+    @Override
     public void push(int value)
     {
         if (value < 0 || isFull())
         {
-            return; // invalid value or full TODO: should I throw an exception?
+            return;
         }
 
-        ValueElement element = new ValueElement("", value); //TODO: what about the name?
+        ValueElement element = new ValueElement("", value);
         this.dvl.insertAtTheEnd(element);
     }
 
+    @Override
     public int top()
     {
-        //TODO: get first value of list
         if (isEmpty())
         {
             return -1;
         }
 
-        //TODO: is head first position? because head always remains the same
-        var topElement = this.dvl.getElementAt(this.dvl.getSize() - 1);
-        return topElement.getValue();
+        IListElement last = this.dvl.getHead().getPredecessor();
+        return last.getValueElement().getValue();
     }
 }

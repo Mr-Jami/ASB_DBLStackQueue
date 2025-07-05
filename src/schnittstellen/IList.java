@@ -21,6 +21,4 @@ public interface IList
     public void reverse();
 
     public String toString();
-
-    public int getSize(); //TODO: can I add my own helper method here?
 }
