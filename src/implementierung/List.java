@@ -16,13 +16,11 @@ public class List implements IList
         this.head.setSuccessor(null);
     }
 
-    @Override
     public IListElement getHead()
     {
         return this.head;
     }
 
-    @Override
     public void insertAtTheEnd(IValueElement value)
     {
         if (value == null)
@@ -52,7 +50,6 @@ public class List implements IList
         }
     }
 
-    @Override
     public void insertAtPos(int pos, IValueElement value)
     {
         if (value == null)
@@ -91,7 +88,6 @@ public class List implements IList
         current.setPredecessor(newElement);
     }
 
-    @Override
     public void deleteFirstOf(IValueElement value)
     {
         if (value == null)
@@ -119,13 +115,18 @@ public class List implements IList
                     // Letztes Element wird gelöscht
                     this.head.setPredecessor(prev);
                 }
+
+                // Prüfen ob nur noch Dummy übrig ist
+                if (this.head.getSuccessor() == null)
+                {
+                    this.head.setPredecessor(null);
+                }
                 return;
             }
             current = current.getSuccessor();
         }
     }
 
-    @Override
     public void deleteAllOf(IValueElement value)
     {
         if (value == null)
@@ -156,9 +157,14 @@ public class List implements IList
             }
             current = next;
         }
+
+        // Prüfen ob nur noch Dummy übrig ist
+        if (this.head.getSuccessor() == null)
+        {
+            this.head.setPredecessor(null);
+        }
     }
 
-    @Override
     public IValueElement getElementAt(int position)
     {
         if (position <= 0)
@@ -179,7 +185,6 @@ public class List implements IList
         return current.getValueElement();
     }
 
-    @Override
     public int getFirstPosOf(IValueElement value)
     {
         if (value == null)
@@ -203,13 +208,11 @@ public class List implements IList
         return -1;
     }
 
-    @Override
     public boolean member(IValueElement value)
     {
         return getFirstPosOf(value) != -1;
     }
 
-    @Override
     public void reverse()
     {
         // Prüfen ob Liste leer oder nur ein Element hat
@@ -242,7 +245,6 @@ public class List implements IList
         first.setSuccessor(null);
     }
 
-    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

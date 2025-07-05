@@ -10,13 +10,11 @@ public class Queue implements IQueue
 
     private final int maxSize = 7;
 
-    @Override
     public IList getDVL()
     {
         return this.dvl;
     }
 
-    @Override
     public int getSize()
     {
         // Elemente zählen (ohne Dummy)
@@ -30,19 +28,16 @@ public class Queue implements IQueue
         return count;
     }
 
-    @Override
     public boolean isEmpty()
     {
         return this.dvl.getHead().getSuccessor() == null;
     }
 
-    @Override
     public boolean isFull()
     {
         return getSize() >= maxSize;
     }
 
-    @Override
     public int dequeue()
     {
         if (isEmpty())
@@ -57,7 +52,6 @@ public class Queue implements IQueue
         return value;
     }
 
-    @Override
     public void enqueue(int value)
     {
         if (value < 0 || isFull())
@@ -69,7 +63,6 @@ public class Queue implements IQueue
         this.dvl.insertAtTheEnd(element);
     }
 
-    @Override
     public int front()
     {
         if (isEmpty())
