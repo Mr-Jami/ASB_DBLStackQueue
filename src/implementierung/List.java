@@ -89,7 +89,10 @@ public class List implements IList
     public void deleteFirstOf(IValueElement value)
     {
         if (value == null)
+        {
             return;
+
+        }
 
         //TODO: should dummy be skipped?
         IListElement current = this.head.getSuccessor();
@@ -121,7 +124,9 @@ public class List implements IList
     public void deleteAllOf(IValueElement value)
     {
         if (value == null)
+        {
             return;
+        }
 
         //TODO: should dummy be skipped?
         IListElement current = this.head.getSuccessor();
@@ -170,7 +175,9 @@ public class List implements IList
     public int getFirstPosOf(IValueElement value)
     {
         if (value == null)
+        {
             return -1;
+        }
 
         IListElement current = this.head;
 
@@ -194,7 +201,9 @@ public class List implements IList
     public void reverse()
     {
         if (this.size <= 2)
+        {
             return; // Nur Dummy oder ein Element
+        }
 
         IListElement current = this.head.getSuccessor();
         IListElement prev = null;

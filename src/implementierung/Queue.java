@@ -7,29 +7,29 @@ import schnittstellen.IQueue;
 //TODO: Queue has max limit of 7 items, including the unchangeable head??
 public class Queue implements IQueue
 {
-    private final IList DVL = new List();
+    private final IList dvl = new List();
 
-    private final int MAX_SIZE = 7; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
+    private final int maxSize = 7; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
 
     public IList getDVL()
     {
-        return this.DVL;
+        return this.dvl;
     }
 
     public int getSize()
     {
-        return this.DVL.getSize() - 1; // without head
+        return this.dvl.getSize() - 1; // without head
     }
 
     //TODO: includes head as well? if yes, this will never be empty
     public boolean isEmpty()
     {
-        return this.DVL.getSize() == 1; // contains head only
+        return this.dvl.getSize() == 1; // contains head only
     }
 
     public boolean isFull()
     {
-        return this.DVL.getSize() >= MAX_SIZE; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
+        return this.dvl.getSize() >= maxSize; //TODO: mehr als 7 sollte nicht erlaubt sein, inkl. head?
     }
 
     //TODO: get first value of list and remove it from the list
@@ -41,8 +41,8 @@ public class Queue implements IQueue
             return -1;
         }
 
-        var frontElement = this.DVL.getElementAt(1);
-        this.DVL.deleteFirstOf(frontElement);
+        var frontElement = this.dvl.getElementAt(1);
+        this.dvl.deleteFirstOf(frontElement);
         return frontElement.getValue();
     }
 
@@ -54,7 +54,7 @@ public class Queue implements IQueue
         }
 
         ValueElement element = new ValueElement("", value); //TODO: what about the name?
-        this.DVL.insertAtTheEnd(element);
+        this.dvl.insertAtTheEnd(element);
     }
 
     public int front()
@@ -67,7 +67,7 @@ public class Queue implements IQueue
         }
 
         //TODO: is head first position? because head always remains the same
-        var frontElement = this.DVL.getElementAt(1); //skipping head right now
+        var frontElement = this.dvl.getElementAt(1); //skipping head right now
         return frontElement.getValue();
     }
 }
