@@ -91,13 +91,13 @@ public class List implements IList
         if (value == null)
             return;
 
+        //TODO: should dummy be skipped?
         IListElement current = this.head.getSuccessor();
 
         while (current != null)
         {
             if (current.getValueElement() == value)
             {
-                // Element entfernen
                 IListElement prev = current.getPredecessor();
                 IListElement next = current.getSuccessor();
 
@@ -108,7 +108,6 @@ public class List implements IList
                 }
                 else
                 {
-                    // Letztes Element wird gelöscht
                     this.head.setPredecessor(prev);
                 }
 
@@ -124,6 +123,7 @@ public class List implements IList
         if (value == null)
             return;
 
+        //TODO: should dummy be skipped?
         IListElement current = this.head.getSuccessor();
 
         while (current != null)
@@ -217,6 +217,7 @@ public class List implements IList
         last.setPredecessor(this.head);
     }
 
+    //TODO: how does the list look like?
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
