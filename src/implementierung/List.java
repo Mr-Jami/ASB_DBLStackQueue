@@ -4,21 +4,18 @@ import schnittstellen.IList;
 import schnittstellen.IListElement;
 import schnittstellen.IValueElement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class List implements IList
 {
-    private final IValueElement dummyValueElement = new ValueElement("Dummy", 0);
+    private IListElement head;
 
-    private final java.util.List<IListElement> list = new ArrayList<IListElement>(); //TODO: soll hier ein ArrayList verwendet werden?
-
-    private IListElement head = new ListElement(dummyValueElement);
+    private int size = 0;
 
     public List()
     {
-        this.list.addFirst(this.head);
-        this.listContentChanged();
+        // Dummy-Element als Kopf erstellen
+        IValueElement dummy = new ValueElement("Dummy", 0);
+        this.head = new ListElement(dummy);
+        this.size = 1; // Dummy zählt mit
     }
 
     public IListElement getHead()
@@ -28,94 +25,200 @@ public class List implements IList
 
     public void insertAtTheEnd(IValueElement value)
     {
-        var listElement = new ListElement(this.nonNullValueElement(value));
-        this.list.addLast(listElement);
-        this.listContentChanged();
+        if (value == null)
+        {
+            value = new ValueElement("", 0);
+        }
+
+        IListElement newElement = new ListElement(value);
+
+        if (this.size == 1)
+        { // Nur Dummy vorhanden
+            this.head.setSuccessor(newElement);
+            newElement.setPredecessor(this.head);
+            this.head.setPredecessor(newElement); // Zirkuläre Verkettung
+        }
+        else
+        {
+            IListElement last = this.head.getPredecessor();
+            last.setSuccessor(newElement);
+            newElement.setPredecessor(last);
+            newElement.setSuccessor(null);
+            this.head.setPredecessor(newElement);
+        }
+        this.size++;
     }
 
     public void insertAtPos(int pos, IValueElement value)
     {
-        var listElement = new ListElement(this.nonNullValueElement(value));
+        if (value == null)
+        {
+            value = new ValueElement("", 0);
+        }
+
         if (pos <= 1)
         {
-            this.list.add(1, listElement);
+            pos = 1;
         }
-        else if (pos > this.list.size())
+
+        if (pos >= this.size)
         {
-            this.list.addLast(listElement);
+            insertAtTheEnd(value);
+            return;
         }
-        else
+
+        IListElement newElement = new ListElement(value);
+        IListElement current = this.head;
+
+        // Zur gewünschten Position navigieren
+        for (int i = 0; i < pos; i++)
         {
-            //TODO: should it add or replace?
-            this.list.add(pos, listElement);
+            current = current.getSuccessor();
         }
-        this.listContentChanged();
+
+        // Element einfügen
+        IListElement prev = current.getPredecessor();
+        newElement.setPredecessor(prev);
+        newElement.setSuccessor(current);
+        prev.setSuccessor(newElement);
+        current.setPredecessor(newElement);
+
+        this.size++;
     }
 
     public void deleteFirstOf(IValueElement value)
     {
-        //TODO: should dummy be deletable?
-        if (value == this.head.getValueElement())
-        {
+        if (value == null)
             return;
-        }
-        for (int i = 0; i < this.list.size(); i++)
+
+        IListElement current = this.head.getSuccessor();
+
+        while (current != null)
         {
-            if (this.list.get(i).getValueElement() == value)
+            if (current.getValueElement() == value)
             {
-                this.list.remove(i);
-                break;
+                // Element entfernen
+                IListElement prev = current.getPredecessor();
+                IListElement next = current.getSuccessor();
+
+                prev.setSuccessor(next);
+                if (next != null)
+                {
+                    next.setPredecessor(prev);
+                }
+                else
+                {
+                    // Letztes Element wird gelöscht
+                    this.head.setPredecessor(prev);
+                }
+
+                this.size--;
+                return;
             }
+            current = current.getSuccessor();
         }
-        this.listContentChanged();
     }
 
     public void deleteAllOf(IValueElement value)
     {
-        //TODO: should dummy be deletable?
-        if (value == this.head.getValueElement())
-        {
+        if (value == null)
             return;
+
+        IListElement current = this.head.getSuccessor();
+
+        while (current != null)
+        {
+            IListElement next = current.getSuccessor();
+
+            if (current.getValueElement() == value)
+            {
+                // Element entfernen
+                IListElement prev = current.getPredecessor();
+
+                prev.setSuccessor(next);
+                if (next != null)
+                {
+                    next.setPredecessor(prev);
+                }
+                else
+                {
+                    this.head.setPredecessor(prev);
+                }
+
+                this.size--;
+            }
+            current = next;
         }
-        this.list.removeIf(listElement -> listElement.getValueElement() == value);
-        this.listContentChanged();
     }
 
     public IValueElement getElementAt(int position)
     {
-        if (position <= 0 || position > this.list.size() - 1)
+        if (position <= 0 || position >= this.size)
         {
             return null;
         }
-        else
+
+        IListElement current = this.head;
+        for (int i = 0; i < position; i++)
         {
-            return this.list.get(position).getValueElement();
+            current = current.getSuccessor();
         }
+
+        return current.getValueElement();
     }
 
     public int getFirstPosOf(IValueElement value)
     {
-        var firstElement = this.list.stream().filter(listElement -> listElement.getValueElement() == value).findFirst().orElse(null);
-        return firstElement == null ? -1 : this.list.indexOf(firstElement);
+        if (value == null)
+            return -1;
+
+        IListElement current = this.head;
+
+        for (int i = 0; i < this.size; i++)
+        {
+            if (current.getValueElement() == value)
+            {
+                return i;
+            }
+            current = current.getSuccessor();
+        }
+
+        return -1;
     }
 
     public boolean member(IValueElement value)
     {
-        var firstElement = this.list.stream().filter(listElement -> listElement.getValueElement() == value).findFirst().orElse(null);
-        return firstElement != null;
+        return getFirstPosOf(value) != -1;
     }
 
     public void reverse()
     {
-        var firstElement = this.list.removeFirst();
-        Collections.reverse(this.list);
-        this.list.addFirst(firstElement);
-        this.listContentChanged();
+        if (this.size <= 2)
+            return; // Nur Dummy oder ein Element
+
+        IListElement current = this.head.getSuccessor();
+        IListElement prev = null;
+        IListElement last = this.head.getPredecessor();
+
+        // Erste Element nach Dummy wird zum letzten
+        this.head.setPredecessor(current);
+
+        while (current != null)
+        {
+            IListElement next = current.getSuccessor();
+            current.setSuccessor(prev);
+            current.setPredecessor(next);
+            prev = current;
+            current = next;
+        }
+
+        // Head zeigt auf das neue erste Element (vorher letztes)
+        this.head.setSuccessor(last);
+        last.setPredecessor(this.head);
     }
 
     public String toString()
     {
-        //TODO: how does the list look like?
         StringBuilder sb = new StringBuilder();
         sb.append("[");
 
@@ -139,29 +242,6 @@ public class List implements IList
 
     public int getSize()
     {
-        return this.list.size();
+        return this.size;
     }
-
-    private IValueElement nonNullValueElement(IValueElement valueElement)
-    {
-        //TODO: what should the parameters be
-        return valueElement == null ? new ValueElement() : valueElement;
-    }
-
-    private void listContentChanged()
-    {
-        if (!this.list.isEmpty())
-        {
-            for (int i = 0; i < this.list.size(); i++)
-            {
-                var previous = (i > 0) ? list.get(i - 1) : list.size() > 1 ? list.getLast() : null;
-                var current = list.get(i);
-                var next = (i < list.size() - 1) ? list.get(i + 1) : null;
-
-                current.setPredecessor(previous);
-                current.setSuccessor(next);
-            }
-        }
-    }
-
 }
